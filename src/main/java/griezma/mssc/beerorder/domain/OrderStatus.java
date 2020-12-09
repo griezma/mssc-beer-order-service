@@ -15,8 +15,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.web.model;
+package griezma.mssc.beerorder.domain;
 
-public enum OrderStatusEnum {
+public enum OrderStatus {
     NEW, READY, PICKED_UP
 }

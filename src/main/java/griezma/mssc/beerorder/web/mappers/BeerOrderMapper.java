@@ -19,9 +19,12 @@ package griezma.mssc.beerorder.web.mappers;
 
 import griezma.mssc.beerorder.domain.BeerOrder;
 import griezma.mssc.beerorder.web.model.BeerOrderDto;
+import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(uses = {DateMapper.class, BeerOrderLineMapper.class})
+@Mapper(uses = { DateMapper.class, BeerOrderLineMapper.class })
+@DecoratedWith(BeerOrderMapperDecorator.class)
 public interface BeerOrderMapper {
 
     BeerOrderDto beerOrderToDto(BeerOrder beerOrder);

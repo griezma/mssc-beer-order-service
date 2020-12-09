@@ -17,6 +17,8 @@
 
 package griezma.mssc.beerorder.web.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,15 +29,12 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class CustomerDto extends BaseItem {
+public class CustomerDto {
+    private UUID id;
 
-    @Builder
-    public CustomerDto(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name) {
-        super(id, version, createdDate, lastModifiedDate);
-        this.name = name;
-    }
+    private OffsetDateTime createdDate;
+
+    private OffsetDateTime lastModifiedDate;
 
     private String name;
-
 }

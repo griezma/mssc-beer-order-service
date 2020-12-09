@@ -23,17 +23,12 @@ import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-/**
- * Created by jt on 2019-02-13.
- */
 @Component
 public class DateMapper {
 
     public OffsetDateTime asOffsetDateTime(Timestamp ts){
         if (ts != null){
-            return OffsetDateTime.of(ts.toLocalDateTime().getYear(), ts.toLocalDateTime().getMonthValue(),
-                    ts.toLocalDateTime().getDayOfMonth(), ts.toLocalDateTime().getHour(), ts.toLocalDateTime().getMinute(),
-                    ts.toLocalDateTime().getSecond(), ts.toLocalDateTime().getNano(), ZoneOffset.UTC);
+            return OffsetDateTime.of(ts.toLocalDateTime(), ZoneOffset.UTC);
         } else {
             return null;
         }
@@ -46,5 +41,4 @@ public class DateMapper {
             return null;
         }
     }
-
 }

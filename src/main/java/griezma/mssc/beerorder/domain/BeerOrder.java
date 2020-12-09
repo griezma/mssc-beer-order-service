@@ -16,10 +16,7 @@
  */
 package griezma.mssc.beerorder.domain;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -31,26 +28,9 @@ import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-01-26.
- */
-@Getter
-@Setter
 @Entity
-@NoArgsConstructor
+@Getter @Setter @NoArgsConstructor
 public class BeerOrder extends BaseEntity {
-
-    @Builder
-    public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef, Customer customer,
-                     Set<BeerOrderLine> beerOrderLines, OrderStatusEnum orderStatus,
-                     String orderStatusCallbackUrl) {
-        super(id, version, createdDate, lastModifiedDate);
-        this.customerRef = customerRef;
-        this.customer = customer;
-        this.beerOrderLines = beerOrderLines;
-        this.orderStatus = orderStatus;
-        this.orderStatusCallbackUrl = orderStatusCallbackUrl;
-    }
 
     private String customerRef;
 
@@ -61,6 +41,6 @@ public class BeerOrder extends BaseEntity {
     @Fetch(FetchMode.JOIN)
     private Set<BeerOrderLine> beerOrderLines;
 
-    private OrderStatusEnum orderStatus = OrderStatusEnum.NEW;
+    private OrderStatus orderStatus = OrderStatus.NEW;
     private String orderStatusCallbackUrl;
 }

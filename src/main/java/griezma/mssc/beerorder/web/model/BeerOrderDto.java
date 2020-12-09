@@ -17,9 +17,11 @@
 
 package griezma.mssc.beerorder.web.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import griezma.mssc.beerorder.domain.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
@@ -27,24 +29,17 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class BeerOrderDto extends BaseItem {
+@NoArgsConstructor @AllArgsConstructor @Builder
+public class BeerOrderDto {
 
-    @Builder
-    public BeerOrderDto(UUID id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, UUID customerId, List<BeerOrderLineDto> beerOrderLines,
-                        OrderStatusEnum orderStatus, String orderStatusCallbackUrl, String customerRef) {
-        super(id, version, createdDate, lastModifiedDate);
-        this.customerId = customerId;
-        this.beerOrderLines = beerOrderLines;
-        this.orderStatus = orderStatus;
-        this.orderStatusCallbackUrl = orderStatusCallbackUrl;
-        this.customerRef = customerRef;
-    }
+    private UUID id;
+
+    private OffsetDateTime createdDate;
+    private OffsetDateTime lastModifiedDate;
 
     private UUID customerId;
     private String customerRef;
     private List<BeerOrderLineDto> beerOrderLines;
-    private OrderStatusEnum orderStatus;
+    private OrderStatus orderStatus;
     private String orderStatusCallbackUrl;
 }

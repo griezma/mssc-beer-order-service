@@ -16,6 +16,7 @@
  */
 package griezma.mssc.beerorder.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,31 +29,12 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-01-26.
- */
-
-@Setter
-@Getter
-@NoArgsConstructor
 @MappedSuperclass
+@Setter @Getter @NoArgsConstructor
+@EqualsAndHashCode(of = { "id", "version" })
 public class BaseEntity {
-
-    public BaseEntity(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate) {
-        this.id = id;
-        this.version = version;
-        this.createdDate = createdDate;
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Type(type="org.hibernate.type.UUIDCharType")
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false )
+    @GeneratedValue
     private UUID id;
 
     @Version

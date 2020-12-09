@@ -19,7 +19,7 @@ package griezma.mssc.beerorder.repositories;
 
 import griezma.mssc.beerorder.domain.BeerOrder;
 import griezma.mssc.beerorder.domain.Customer;
-import griezma.mssc.beerorder.domain.OrderStatusEnum;
+import griezma.mssc.beerorder.domain.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -37,7 +37,7 @@ public interface BeerOrderRepository  extends JpaRepository<BeerOrder, UUID> {
 
     Page<BeerOrder> findAllByCustomer(Customer customer, Pageable pageable);
 
-    List<BeerOrder> findAllByOrderStatus(OrderStatusEnum orderStatusEnum);
+    List<BeerOrder> findAllByOrderStatus(OrderStatus orderStatusEnum);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     BeerOrder findOneById(UUID id);

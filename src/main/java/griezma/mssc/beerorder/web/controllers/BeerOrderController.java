@@ -19,7 +19,7 @@ package griezma.mssc.beerorder.web.controllers;
 
 import griezma.mssc.beerorder.services.BeerOrderService;
 import griezma.mssc.beerorder.web.model.BeerOrderDto;
-import griezma.mssc.beerorder.web.model.BeerOrderPagedList;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +40,7 @@ public class BeerOrderController {
     }
 
     @GetMapping("orders")
-    public BeerOrderPagedList listOrders(@PathVariable("customerId") UUID customerId,
+    public Page<BeerOrderDto> listOrders(@PathVariable("customerId") UUID customerId,
                                          @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize){
 

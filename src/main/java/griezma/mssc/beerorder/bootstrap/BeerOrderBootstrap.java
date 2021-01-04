@@ -32,7 +32,7 @@ public class BeerOrderBootstrap implements CommandLineRunner {
                     .apiKey(UUID.randomUUID())
                     .build();
             customerRepository.save(customer);
-            log.info("customer id: {}", customer.getId());
+            log.info("Tasting Room Customer: {}", customer.getId());
         }
     }
 }

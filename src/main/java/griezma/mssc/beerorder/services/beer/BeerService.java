@@ -1,6 +1,5 @@
 package griezma.mssc.beerorder.services.beer;
 
-import com.sun.el.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,8 @@ public class BeerService {
     private static final String BEER_ID_PATH = "/api/v1/beer/";
     private static final String BEER_UPC_PATH = "/api/v1/beerupc/";
 
-    @Value("${mssc.beerServiceUrl}")
-    private String beerServiceUrl;
+    @Value("${mssc.beer_service_host}")
+    private String beerServiceHost;
 
     private final RestTemplate rest;
 
@@ -24,12 +23,12 @@ public class BeerService {
     }
 
     public Optional<BeerDto> findBeerById(UUID beerId) {
-        BeerDto beer = rest.getForObject(beerServiceUrl + BEER_ID_PATH + beerId, BeerDto.class);
+        BeerDto beer = rest.getForObject(beerServiceHost + BEER_ID_PATH + beerId, BeerDto.class);
         return Optional.ofNullable(beer);
     }
 
     public Optional<BeerDto> findBeerByUpc(String upc) {
-        BeerDto beer = rest.getForObject(beerServiceUrl + BEER_UPC_PATH + upc, BeerDto.class);
+        BeerDto beer = rest.getForObject(beerServiceHost + BEER_UPC_PATH + upc, BeerDto.class);
         return Optional.ofNullable(beer);
     }
 }

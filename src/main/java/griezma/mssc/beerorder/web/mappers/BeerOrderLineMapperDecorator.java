@@ -22,6 +22,8 @@ abstract class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
         if (beer != null) {
             dto.setBeerId(beer.getId());
             dto.setBeerName(beer.getBeerName());
+            dto.setBeerStyle(beer.getBeerStyle());
+            dto.setPrice(beer.getPrice());
         };
         return dto;
     }

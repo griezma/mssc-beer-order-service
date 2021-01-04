@@ -50,7 +50,7 @@ public class TastingRoomService {
     }
 
     private void doPlaceOrder(Customer customer) {
-        log.debug("doPlaceOrder customerId={}", customer.getId());
+//        log.debug("doPlaceOrder: customer={}", customer.getId());
         String beerToOrder = getRandomBeerUpc();
 
         BeerOrderLineDto beerOrderLine = BeerOrderLineDto.builder()

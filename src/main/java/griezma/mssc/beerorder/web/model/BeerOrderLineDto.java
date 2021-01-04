@@ -19,6 +19,7 @@ package griezma.mssc.beerorder.web.model;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -29,5 +30,7 @@ public class BeerOrderLineDto{
     private String upc;
     private UUID beerId;
     private String beerName;
+    private String beerStyle;
+    private BigDecimal price;
     private Integer orderQuantity = 0;
 }

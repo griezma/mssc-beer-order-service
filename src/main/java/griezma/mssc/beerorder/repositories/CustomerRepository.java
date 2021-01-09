@@ -16,7 +16,7 @@
  */
 package griezma.mssc.beerorder.repositories;
 
-import griezma.mssc.beerorder.domain.Customer;
+import griezma.mssc.beerorder.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

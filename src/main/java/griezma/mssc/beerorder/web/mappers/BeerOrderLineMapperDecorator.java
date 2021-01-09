@@ -1,10 +1,10 @@
 package griezma.mssc.beerorder.web.mappers;
 
 
-import griezma.mssc.beerorder.domain.BeerOrderLine;
-import griezma.mssc.beerorder.services.beer.BeerDto;
+import griezma.mssc.beerorder.entity.BeerOrderLine;
+import griezma.mssc.brewery.model.BeerDto;
 import griezma.mssc.beerorder.services.beer.BeerService;
-import griezma.mssc.beerorder.web.model.BeerOrderLineDto;
+import griezma.mssc.brewery.model.BeerOrderLineDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 

@@ -14,26 +14,48 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.domain;
+package griezma.mssc.beerorder.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 import java.util.UUID;
 
+
 @Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-@ToString(of = { "super.id", "customerName", "apiKey" })
-public class Customer extends BaseEntity {
+@Getter @Setter @NoArgsConstructor
+public class BeerOrderLine {
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    private String customerName;
+    @Version
+    private Long version;
 
-    private UUID apiKey;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
+
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    @ManyToOne
+    private BeerOrder beerOrder;
+
+    private UUID beerId;
+
+    private String upc;
+
+    private Integer orderQuantity = 0;
+
+    private Integer allocationQuantity = 0;
 }

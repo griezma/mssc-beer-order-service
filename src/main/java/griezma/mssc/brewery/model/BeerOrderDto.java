@@ -14,33 +14,30 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.domain;
 
-import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+package griezma.mssc.brewery.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.sql.Timestamp;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Getter @Setter @NoArgsConstructor
-public class BeerOrder extends BaseEntity {
+@Data
+@NoArgsConstructor @AllArgsConstructor @Builder
+public class BeerOrderDto {
 
+    private UUID id;
+
+    private OffsetDateTime createdDate;
+    private OffsetDateTime lastModifiedDate;
+
+    private UUID customerId;
     private String customerRef;
-
-    @ManyToOne
-    private Customer customer;
-
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
-    private Set<BeerOrderLine> beerOrderLines;
-
-    private OrderStatus orderStatus = OrderStatus.NEW;
+    private List<BeerOrderLineDto> beerOrderLines;
+    private OrderStatus orderStatus;
     private String orderStatusCallbackUrl;
 }

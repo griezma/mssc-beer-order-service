@@ -14,23 +14,43 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-package griezma.mssc.beerorder.web.model;
+package griezma.mssc.beerorder.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Set;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor @AllArgsConstructor @Builder
-public class BeerOrderLineDto{
+@Entity
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@ToString(of = { "id", "customerName", "apiKey" })
+public class Customer {
+    @Id
+    @GeneratedValue
     private UUID id;
-    private String upc;
-    private UUID beerId;
-    private String beerName;
-    private String beerStyle;
-    private BigDecimal price;
-    private Integer orderQuantity = 0;
+
+    @Version
+    private Long version;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
+
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
+
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    private String customerName;
+
+    private UUID apiKey;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<BeerOrder> beerOrders;
 }

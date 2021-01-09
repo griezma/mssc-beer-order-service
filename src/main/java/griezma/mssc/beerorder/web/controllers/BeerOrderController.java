@@ -18,7 +18,7 @@
 package griezma.mssc.beerorder.web.controllers;
 
 import griezma.mssc.beerorder.services.BeerOrderService;
-import griezma.mssc.beerorder.web.model.BeerOrderDto;
+import griezma.mssc.brewery.model.BeerOrderDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;

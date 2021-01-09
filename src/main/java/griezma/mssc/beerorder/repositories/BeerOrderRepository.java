@@ -17,9 +17,9 @@
 package griezma.mssc.beerorder.repositories;
 
 
-import griezma.mssc.beerorder.domain.BeerOrder;
-import griezma.mssc.beerorder.domain.Customer;
-import griezma.mssc.beerorder.domain.OrderStatus;
+import griezma.mssc.beerorder.entity.BeerOrder;
+import griezma.mssc.beerorder.entity.Customer;
+import griezma.mssc.brewery.model.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

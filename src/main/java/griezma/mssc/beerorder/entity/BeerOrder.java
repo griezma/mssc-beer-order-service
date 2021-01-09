@@ -14,25 +14,25 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.domain;
+package griezma.mssc.beerorder.entity;
 
-import lombok.EqualsAndHashCode;
+import griezma.mssc.brewery.model.OrderStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Set;
 import java.util.UUID;
 
-@MappedSuperclass
-@Setter @Getter @NoArgsConstructor
-@EqualsAndHashCode(of = { "id", "version" })
-public class BaseEntity {
+@Entity
+@Getter @Setter @NoArgsConstructor
+public class BeerOrder {
     @Id
     @GeneratedValue
     private UUID id;
@@ -50,4 +50,17 @@ public class BaseEntity {
     public boolean isNew() {
         return this.id == null;
     }
+
+    private String customerRef;
+
+    @ManyToOne
+    private Customer customer;
+
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<BeerOrderLine> beerOrderLines;
+
+    private OrderStatus orderStatus = OrderStatus.NEW;
+
+    private String orderStatusCallbackUrl;
 }

@@ -17,25 +17,23 @@
 
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.domain.BeerOrder;
-import griezma.mssc.beerorder.domain.Customer;
-import griezma.mssc.beerorder.domain.OrderStatus;
+import griezma.mssc.beerorder.entity.BeerOrder;
+import griezma.mssc.beerorder.entity.Customer;
+import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.beerorder.repositories.BeerOrderRepository;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
-import griezma.mssc.beerorder.web.model.BeerOrderDto;
+import griezma.mssc.brewery.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -90,22 +88,15 @@ public class BeerOrderService {
         beerOrderRepository.save(beerOrder);
     }
 
-    private BeerOrder getOrder(UUID customerId, UUID orderId){
-        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+    private BeerOrder getOrder(UUID customerId, UUID orderId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        BeerOrder beerOrder = beerOrderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Beer Order not found"));
 
-        if(customerOptional.isPresent()){
-            Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(orderId);
-
-            if(beerOrderOptional.isPresent()){
-                BeerOrder beerOrder = beerOrderOptional.get();
-
-                // fall to exception if customer id's do not match - order not for customer
-                if(beerOrder.getCustomer().getId().equals(customerId)){
-                    return beerOrder;
-                }
-            }
+        // fall to exception if customer ids do not match - order not for customer
+        if (beerOrder.getCustomer().getId().equals(customerId)) {
+            return beerOrder;
+        } else {
             throw new RuntimeException("Beer Order Not Found");
         }
-        throw new RuntimeException("Customer Not Found");
     }
 }

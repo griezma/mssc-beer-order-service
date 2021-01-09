@@ -14,25 +14,19 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.domain;
 
-import lombok.*;
+package griezma.mssc.brewery.model;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import java.sql.Timestamp;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.UUID;
 
-
-@Entity
-@Getter @Setter @NoArgsConstructor
-public class BeerOrderLine extends BaseEntity {
-
-    @ManyToOne
-    private BeerOrder beerOrder;
-
-    private UUID beerId;
-    private String upc;
-    private Integer orderQuantity = 0;
-    private Integer quantityAllocated = 0;
+@Data
+@NoArgsConstructor
+public class OrderStatusUpdate {
+    private UUID id;
+    private UUID orderId;
+    private String customerRef;
+    private String orderStatus;
 }

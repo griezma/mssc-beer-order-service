@@ -17,7 +17,7 @@
 
 package griezma.mssc.beerorder.repositories;
 
-import griezma.mssc.beerorder.domain.BeerOrderLine;
+import griezma.mssc.beerorder.entity.BeerOrderLine;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.UUID;

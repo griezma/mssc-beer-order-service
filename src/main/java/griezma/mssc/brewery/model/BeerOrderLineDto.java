@@ -15,21 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.web.model;
+package griezma.mssc.brewery.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
-public class OrderStatusUpdate {
-    private UUID id;
-    private UUID orderId;
-    private String customerRef;
-    private String orderStatus;
+@NoArgsConstructor @AllArgsConstructor @Builder
+public class BeerOrderLineDto {
+    private long id;
+    private String upc;
+    private UUID beerId;
+    private String beerName;
+    private String beerStyle;
+    private BigDecimal price;
+    private Integer orderQuantity = 0;
+    private Integer allocationQuantity;
 }

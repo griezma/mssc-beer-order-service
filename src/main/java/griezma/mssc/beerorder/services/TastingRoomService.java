@@ -1,11 +1,11 @@
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.domain.Customer;
+import griezma.mssc.beerorder.entity.Customer;
 import griezma.mssc.beerorder.repositories.BeerOrderRepository;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
 import griezma.mssc.beerorder.bootstrap.BeerOrderBootstrap;
-import griezma.mssc.beerorder.web.model.BeerOrderDto;
-import griezma.mssc.beerorder.web.model.BeerOrderLineDto;
+import griezma.mssc.brewery.model.BeerOrderDto;
+import griezma.mssc.brewery.model.BeerOrderLineDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;

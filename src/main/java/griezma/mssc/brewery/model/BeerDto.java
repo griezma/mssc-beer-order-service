@@ -1,4 +1,4 @@
-package griezma.mssc.beerorder.services.beer;
+package griezma.mssc.brewery.model;
 
 import lombok.Data;
 

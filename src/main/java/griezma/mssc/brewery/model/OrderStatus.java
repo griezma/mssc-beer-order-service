@@ -15,8 +15,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.domain;
+package griezma.mssc.brewery.model;
 
 public enum OrderStatus {
-    NEW, READY, PICKED_UP
+    NEW,
+    VALIDATION_PENDING,
+    VALIDATED,
+    VALIDATION_ERROR,
+    ALLOCATION_PENDING,
+    ALLOCATED,
+    ALLOCATION_ERROR,
+    INVENTORY_PENDING,
+    PICKED_UP,
+    DELIVERED,
+    DELIVERY_ERROR
 }

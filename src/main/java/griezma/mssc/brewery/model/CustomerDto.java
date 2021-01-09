@@ -15,31 +15,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.web.model;
+package griezma.mssc.brewery.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import griezma.mssc.beerorder.domain.OrderStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor @AllArgsConstructor @Builder
-public class BeerOrderDto {
-
+@NoArgsConstructor
+public class CustomerDto {
     private UUID id;
 
     private OffsetDateTime createdDate;
+
     private OffsetDateTime lastModifiedDate;
 
-    private UUID customerId;
-    private String customerRef;
-    private List<BeerOrderLineDto> beerOrderLines;
-    private OrderStatus orderStatus;
-    private String orderStatusCallbackUrl;
+    private String name;
 }

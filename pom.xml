@@ -9,10 +9,16 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>griezma.mssc</groupId>
     <artifactId>mssc-beer-order-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mssc-beer-order-service</name>
 
     <description>MSSC Beer Order Service</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

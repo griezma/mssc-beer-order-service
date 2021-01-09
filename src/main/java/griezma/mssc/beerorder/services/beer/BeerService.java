@@ -1,5 +1,6 @@
 package griezma.mssc.beerorder.services.beer;
 
+import griezma.mssc.brewery.model.BeerDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;

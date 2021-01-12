@@ -18,7 +18,7 @@ import java.util.EnumSet;
 @Configuration
 @EnableStateMachineFactory
 @RequiredArgsConstructor
-public class BeerOrderStateMachineConfig extends StateMachineConfigurerAdapter<OrderStatus, OrderEvent> {
+public class BeerOrderStateMachine extends StateMachineConfigurerAdapter<OrderStatus, OrderEvent> {
 
     private final ValidateOrderAction validateOrder;
     private final AllocateOrderAction allocateOrder;

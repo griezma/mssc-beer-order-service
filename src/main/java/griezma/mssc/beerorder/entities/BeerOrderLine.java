@@ -14,11 +14,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.entity;
+package griezma.mssc.beerorder.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -28,7 +26,8 @@ import java.util.UUID;
 
 
 @Entity
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter
+@Builder @AllArgsConstructor @NoArgsConstructor
 public class BeerOrderLine {
     @Id
     @GeneratedValue

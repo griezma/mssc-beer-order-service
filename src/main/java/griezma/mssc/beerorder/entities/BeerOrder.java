@@ -14,23 +14,30 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.entity;
+package griezma.mssc.beerorder.entities;
 
+import griezma.mssc.brewery.model.OrderStatus;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-@ToString(of = { "id", "customerName", "apiKey" })
-public class Customer {
-    @Id
-    @GeneratedValue
+@Getter @Setter @Builder
+@NoArgsConstructor @AllArgsConstructor
+@ToString
+public class BeerOrder {
+    @Id @GeneratedValue
+//    @GeneratedValue(generator = "UUID")
+//    @GenericGenerator(
+//            name = "UUID",
+//            strategy = "org.hibernate.id.UUIDGenerator"
+//    )
     private UUID id;
 
     @Version
@@ -47,10 +54,16 @@ public class Customer {
         return this.id == null;
     }
 
-    private String customerName;
+    private String customerRef;
 
-    private UUID apiKey;
+    @ManyToOne
+    private Customer customer;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<BeerOrder> beerOrders;
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.JOIN)
+    private Set<BeerOrderLine> orderLines;
+
+    private OrderStatus orderStatus = OrderStatus.NEW;
+
+    private String orderStatusCallbackUrl;
 }

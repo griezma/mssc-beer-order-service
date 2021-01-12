@@ -1,6 +1,6 @@
 package griezma.mssc.beerorder.web.mappers;
 
-import griezma.mssc.beerorder.entity.BeerOrderLine;
+import griezma.mssc.beerorder.entities.BeerOrderLine;
 import griezma.mssc.brewery.model.BeerOrderLineDto;
 import org.mapstruct.DecoratedWith;
 import org.mapstruct.Mapper;

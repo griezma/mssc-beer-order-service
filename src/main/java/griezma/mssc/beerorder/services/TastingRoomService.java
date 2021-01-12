@@ -1,6 +1,6 @@
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.entity.Customer;
+import griezma.mssc.beerorder.entities.Customer;
 import griezma.mssc.beerorder.repositories.BeerOrderRepository;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
 import griezma.mssc.beerorder.bootstrap.BeerOrderBootstrap;
@@ -64,7 +64,7 @@ public class TastingRoomService {
         BeerOrderDto beerOrder = BeerOrderDto.builder()
                 .customerId(customer.getId())
                 .customerRef(UUID.randomUUID().toString())
-                .beerOrderLines(beerOrderLines)
+                .orderLines(beerOrderLines)
                 .build();
 
         BeerOrderDto savedOrder = beerOrderService.placeOrder(customer.getId(), beerOrder);

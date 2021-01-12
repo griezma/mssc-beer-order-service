@@ -14,15 +14,10 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.entity;
+package griezma.mssc.beerorder.entities;
 
-import griezma.mssc.brewery.model.OrderStatus;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -31,8 +26,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Getter @Setter @NoArgsConstructor
-public class BeerOrder {
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@ToString(of = { "id", "customerName", "apiKey" })
+public class Customer {
     @Id
     @GeneratedValue
     private UUID id;
@@ -51,16 +47,10 @@ public class BeerOrder {
         return this.id == null;
     }
 
-    private String customerRef;
+    private String customerName;
 
-    @ManyToOne
-    private Customer customer;
+    private UUID apiKey;
 
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
-    private Set<BeerOrderLine> beerOrderLines;
-
-    private OrderStatus orderStatus = OrderStatus.NEW;
-
-    private String orderStatusCallbackUrl;
+    @OneToMany(mappedBy = "customer")
+    private Set<BeerOrder> beerOrders;
 }

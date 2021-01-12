@@ -17,8 +17,8 @@
 
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.entity.BeerOrder;
-import griezma.mssc.beerorder.entity.Customer;
+import griezma.mssc.beerorder.entities.BeerOrder;
+import griezma.mssc.beerorder.entities.Customer;
 import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.beerorder.repositories.BeerOrderRepository;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
@@ -66,7 +66,7 @@ public class BeerOrderService {
         beerOrder.setCustomer(customer);
         beerOrder.setOrderStatus(OrderStatus.NEW);
 
-        beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
+        beerOrder.getOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
         BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
 
         log.debug("Saved Beer Order: " + beerOrder.getId());

@@ -37,7 +37,7 @@ public class BeerOrderDto {
 
     private UUID customerId;
     private String customerRef;
-    private List<BeerOrderLineDto> beerOrderLines;
+    private List<BeerOrderLineDto> orderLines;
     private OrderStatus orderStatus;
     private String orderStatusCallbackUrl;
 }

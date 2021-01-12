@@ -1,13 +1,12 @@
 package griezma.mssc.brewery.model.events;
 
+import griezma.mssc.brewery.model.BeerOrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data @Builder @AllArgsConstructor
 public class ValidateOrderResponse {
-    private UUID orderId;
+    private BeerOrderDto order;
     private boolean valid;
 }

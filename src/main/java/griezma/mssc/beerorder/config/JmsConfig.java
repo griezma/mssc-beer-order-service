@@ -13,9 +13,10 @@ import org.springframework.jms.support.converter.MessageType;
 @EnableJms
 @RequiredArgsConstructor
 public class JmsConfig {
-    public static final String VALIDATE_BEERORDER_QUEUE = "validate-order";
-    public static final String VALIDATE_BEERORDER_RESPONSE_QUEUE = "validate-order-response";
-    public static final String ALLOCATE_BEERORDER_QUEUE = "allocate-order";
+    public static final String VALIDATE_ORDER_QUEUE = "validate-order";
+    public static final String VALIDATE_ORDER_RESPONSE_QUEUE = "validate-order-response";
+    public static final String ALLOCATE_ORDER_QUEUE = "allocate-order";
+    public static final String ALLOCATE_ORDER_RESPONSE_QUEUE = "allocate-order-reponse";
 
     @Bean
     MessageConverter jsonConverter(ObjectMapper om) {

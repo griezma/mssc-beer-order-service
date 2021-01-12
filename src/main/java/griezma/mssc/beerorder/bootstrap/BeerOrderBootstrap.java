@@ -1,6 +1,6 @@
 package griezma.mssc.beerorder.bootstrap;
 
-import griezma.mssc.beerorder.entity.Customer;
+import griezma.mssc.beerorder.entities.Customer;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

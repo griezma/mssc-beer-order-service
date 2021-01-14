@@ -2,15 +2,13 @@ package griezma.mssc.beerorder.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import griezma.mssc.beerorder.config.JmsConfig;
-import griezma.mssc.beerorder.data.BeerOrder;
-import griezma.mssc.beerorder.data.BeerOrderLine;
-import griezma.mssc.beerorder.data.Customer;
-import griezma.mssc.beerorder.data.BeerOrderRepository;
-import griezma.mssc.beerorder.data.CustomerRepository;
+import griezma.mssc.beerorder.data.*;
 import griezma.mssc.beerorder.sm.actions.ValidationDeniedAction;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.BeerDto;
 import griezma.mssc.brewery.model.OrderStatus;
+import griezma.mssc.brewery.model.events.DeallocateOrderRequest;
+import griezma.mssc.brewery.model.events.DeallocateOrderResponse;
 import griezma.mssc.brewery.model.events.OrderAllocationFailure;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
 @SpringBootTest
@@ -182,7 +181,31 @@ public class BeerOrderFlowIT {
         await().atMost(Duration.ofMillis(500))
                 .untilAsserted(() -> {
                     BeerOrder cancelled = orderRepo.findById(orderId).orElseThrow();
-                    assertEquals(OrderStatus.CANCEL_PENDING, cancelled.getOrderStatus());
+                    assertEquals(OrderStatus.CANCELLED, cancelled.getOrderStatus());
+                });
+    }
+
+    @Test @Timeout(1)
+    void cancelAllocatedOrder() {
+        log.debug("cancelValidateOrder called");
+        BeerOrder validated = createAllocatedBeerOrder();
+        var orderId = validated.getId();
+        orderFlow.cancelOrder(validated);
+        await().atMost(Duration.ofMillis(500))
+                .untilAsserted(() -> {
+                    BeerOrder cancelPending = orderRepo.findById(orderId).orElseThrow();
+                    assertEquals(OrderStatus.CANCEL_PENDING, cancelPending.getOrderStatus());
+                });
+
+        DeallocateOrderRequest deallocationRequest = (DeallocateOrderRequest) jms.receiveAndConvert(JmsConfig.DEALLOCATE_ORDER_QUEUE);
+        assertNotNull(deallocationRequest);
+        assertEquals(orderId, deallocationRequest.getOrder().getId());
+
+        jms.convertAndSend(JmsConfig.DEALLOCATE_ORDER_REQPONSE_QUEUE, DeallocateOrderResponse.builder().orderId(orderId).complete(true).build());
+        await().atMost(Duration.ofMillis(500))
+                .untilAsserted(() -> {
+                    BeerOrder cancelled = orderRepo.findById(orderId).orElseThrow();
+                    assertEquals(OrderStatus.CANCELLED, cancelled.getOrderStatus());
                 });
     }
 

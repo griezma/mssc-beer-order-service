@@ -1,6 +1,6 @@
 package griezma.mssc.beerorder.sm;
 
-import griezma.mssc.beerorder.events.OrderEvent;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.beerorder.sm.actions.*;
 import griezma.mssc.brewery.model.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +73,7 @@ public class BeerOrderStateMachine extends StateMachineConfigurerAdapter<OrderSt
                     .action(allocateOrder)
                 .and().withExternal()
                     .source(OrderStatus.VALIDATED)
-                    .target(OrderStatus.CANCEL_PENDING)
+                    .target(OrderStatus.CANCELLED)
                     .event(OrderEvent.CANCEL_ORDER)
                 .and().withExternal()
                     .source(OrderStatus.ALLOCATION_PENDING)
@@ -90,7 +90,7 @@ public class BeerOrderStateMachine extends StateMachineConfigurerAdapter<OrderSt
                     .event(OrderEvent.ALLOCATION_NO_INVENTORY)
                 .and().withExternal()
                     .source(OrderStatus.ALLOCATION_PENDING)
-                    .target(OrderStatus.CANCEL_PENDING)
+                    .target(OrderStatus.CANCELLED)
                     .event(OrderEvent.CANCEL_ORDER)
                 .and().withExternal()
                     .source(OrderStatus.ALLOCATED)

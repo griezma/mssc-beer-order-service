@@ -6,7 +6,7 @@ import griezma.mssc.beerorder.data.BeerOrderRepository;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.brewery.model.events.OrderAllocationFailure;
-import griezma.mssc.beerorder.events.OrderEvent;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;

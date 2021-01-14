@@ -1,4 +1,4 @@
-package griezma.mssc.beerorder.events;
+package griezma.mssc.beerorder.sm.events;
 
 public enum OrderEvent {
     VALIDATE_ORDER,

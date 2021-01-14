@@ -1,6 +1,6 @@
 package griezma.mssc.beerorder.sm.actions;
 
-import griezma.mssc.beerorder.events.OrderEvent;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.brewery.model.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

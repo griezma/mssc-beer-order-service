@@ -4,7 +4,7 @@ import griezma.mssc.beerorder.config.JmsConfig;
 import griezma.mssc.beerorder.data.BeerOrder;
 import griezma.mssc.beerorder.data.BeerOrderLine;
 import griezma.mssc.beerorder.data.BeerOrderRepository;
-import griezma.mssc.beerorder.events.OrderEvent;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.beerorder.sm.StatePersistInterceptor;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import griezma.mssc.brewery.model.BeerOrderLineDto;

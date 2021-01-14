@@ -3,7 +3,7 @@ package griezma.mssc.beerorder.sm.actions;
 import griezma.mssc.beerorder.config.JmsConfig;
 import griezma.mssc.beerorder.data.BeerOrder;
 import griezma.mssc.beerorder.data.BeerOrderRepository;
-import griezma.mssc.beerorder.events.OrderEvent;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.brewery.model.events.AllocateOrderRequest;

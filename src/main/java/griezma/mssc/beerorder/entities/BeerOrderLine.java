@@ -56,5 +56,5 @@ public class BeerOrderLine {
 
     private Integer orderQuantity = 0;
 
-    private Integer allocationQuantity = 0;
+    private Integer allocatedQuantity = 0;
 }

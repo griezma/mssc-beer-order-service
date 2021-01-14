@@ -14,7 +14,6 @@ import griezma.mssc.brewery.model.events.ValidateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
@@ -61,7 +60,7 @@ public class BeerOrderFlow {
         BeerOrder order = repo.findById(response.getOrder().getId()).orElseThrow();
 
         if (response.isOrderFilled()) {
-            orderAllocationSuccess(order, response.getOrder());
+            orderAllocationPassed(order, response.getOrder());
         } else if (response.isAllocationError()) {
             orderAllocationError(order, response.getOrder());
         } else {
@@ -69,7 +68,7 @@ public class BeerOrderFlow {
         }
     }
 
-    public void orderAllocationSuccess(BeerOrder order, BeerOrderDto orderDto) {
+    public void orderAllocationPassed(BeerOrder order, BeerOrderDto orderDto) {
         sendOrderEvent(order, OrderEvent.ALLOCATION_SUCCESS);
         updateAllocation(orderDto);
     }
@@ -83,24 +82,28 @@ public class BeerOrderFlow {
         updateAllocation(orderDto);
     }
 
+    public void beerOrderPickedUp(BeerOrder order) {
+        sendOrderEvent(order, OrderEvent.ORDER_PICKED_UP);
+    }
+
     private void updateAllocation(BeerOrderDto orderDto) {
         BeerOrder order = repo.findById(orderDto.getId()).orElseThrow();
         for (BeerOrderLine orderLine : order.getOrderLines()) {
             orderDto.getOrderLines().stream()
                     .filter(dtoLine -> dtoLine.getId() == orderLine.getId())
                     .findFirst()
-                    .map(BeerOrderLineDto::getAllocationQuantity)
-                    .ifPresent(orderLine::setAllocationQuantity);
+                    .map(BeerOrderLineDto::getAllocatedQuantity)
+                    .ifPresent(orderLine::setAllocatedQuantity);
         }
         repo.save(order);
     }
 
     private void sendOrderEvent(BeerOrder order, OrderEvent event) {
-        Message<OrderEvent> message = MessageBuilder
+        log.debug("sendOrderEvent: customers={}");
+        var messsageBuilder = MessageBuilder
                 .withPayload(event)
-                .setHeader(BEERORDER_ID_HEADER, order.getId().toString())
-                .build();
-        stateMachine(order).sendEvent(message);
+                .setHeader(BEERORDER_ID_HEADER, order.getId().toString());
+        stateMachine(order).sendEvent(messsageBuilder.build());
     }
 
     private StateMachine<OrderStatus, OrderEvent> stateMachine(BeerOrder order) {

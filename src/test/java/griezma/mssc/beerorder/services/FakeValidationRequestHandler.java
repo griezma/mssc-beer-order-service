@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component @RequiredArgsConstructor
-public class FakeValidationHandler {
+public class FakeValidationRequestHandler {
     private final JmsTemplate jms;
 
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_QUEUE)

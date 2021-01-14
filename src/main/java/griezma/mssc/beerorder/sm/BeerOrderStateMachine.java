@@ -1,9 +1,9 @@
 package griezma.mssc.beerorder.sm;
 
 import griezma.mssc.beerorder.sm.actions.AllocateOrderAction;
-import griezma.mssc.brewery.model.events.OrderEvent;
-import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.beerorder.sm.actions.ValidateOrderAction;
+import griezma.mssc.brewery.model.OrderStatus;
+import griezma.mssc.brewery.model.events.OrderEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +66,10 @@ public class BeerOrderStateMachine extends StateMachineConfigurerAdapter<OrderSt
                 .and().withExternal()
                     .source(OrderStatus.ALLOCATION_PENDING)
                     .target(OrderStatus.INVENTORY_PENDING)
-                    .event(OrderEvent.ALLOCATION_NO_INVENTORY);
+                    .event(OrderEvent.ALLOCATION_NO_INVENTORY)
+                .and().withExternal()
+                    .source(OrderStatus.ALLOCATED)
+                    .target(OrderStatus.PICKED_UP)
+                    .event(OrderEvent.ORDER_PICKED_UP);
     }
 }

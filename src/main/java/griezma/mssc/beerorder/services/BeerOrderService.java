@@ -19,19 +19,18 @@ package griezma.mssc.beerorder.services;
 
 import griezma.mssc.beerorder.entities.BeerOrder;
 import griezma.mssc.beerorder.entities.Customer;
-import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.beerorder.repositories.BeerOrderRepository;
 import griezma.mssc.beerorder.repositories.CustomerRepository;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,8 +42,8 @@ public class BeerOrderService {
     private final BeerOrderRepository beerOrderRepository;
     private final CustomerRepository customerRepository;
     private final BeerOrderMapper beerOrderMapper;
-    private final ApplicationEventPublisher publisher;
-
+//    private final ApplicationEventPublisher publisher;
+    private final BeerOrderFlow orderFlow;
 
     public Page<BeerOrderDto> listOrders(UUID customerId, Pageable pageable) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
@@ -60,16 +59,14 @@ public class BeerOrderService {
     public BeerOrderDto placeOrder(UUID customerId, BeerOrderDto beerOrderDto) {
         Customer customer = customerRepository
                 .findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer Not Found: " + customerId));
+                .orElseThrow(() -> new RuntimeException("Customer not found: " + customerId));
 
         BeerOrder beerOrder = beerOrderMapper.dtoToBeerOrder(beerOrderDto);
+                orderFlow.newBeerOrder(beerOrderMapper.dtoToBeerOrder(beerOrderDto));
         beerOrder.setCustomer(customer);
-        beerOrder.setOrderStatus(OrderStatus.NEW);
-
         beerOrder.getOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
-        BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
 
-        log.debug("Saved Beer Order: " + beerOrder.getId());
+        BeerOrder savedBeerOrder = orderFlow.newBeerOrder(beerOrder);
 
         //todo impl
         //  publisher.publishEvent(new NewBeerOrderEvent(savedBeerOrder));
@@ -77,15 +74,19 @@ public class BeerOrderService {
         return beerOrderMapper.beerOrderToDto(savedBeerOrder);
     }
 
-    public BeerOrderDto getOrderById(UUID customerId, UUID orderId) {
-        return beerOrderMapper.beerOrderToDto(getOrder(customerId, orderId));
+    public void pickupOrder(UUID customerId, UUID orderId) {
+        BeerOrder order = beerOrderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Order not found: " + orderId));
+        Customer customer = customerRepository
+                .findById(customerId)
+                .orElseThrow(() -> new NoSuchElementException("Customer not found: " + customerId));
+
+        orderFlow.beerOrderPickedUp(order);
     }
 
-    public void pickupOrder(UUID customerId, UUID orderId) {
-        BeerOrder beerOrder = getOrder(customerId, orderId);
-        beerOrder.setOrderStatus(OrderStatus.PICKED_UP);
-
-        beerOrderRepository.save(beerOrder);
+    public BeerOrderDto getOrderById(UUID customerId, UUID orderId) {
+        return beerOrderMapper.beerOrderToDto(getOrder(customerId, orderId));
     }
 
     private BeerOrder getOrder(UUID customerId, UUID orderId) {

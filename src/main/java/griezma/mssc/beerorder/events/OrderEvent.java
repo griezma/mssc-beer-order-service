@@ -1,4 +1,4 @@
-package griezma.mssc.brewery.model.events;
+package griezma.mssc.beerorder.events;
 
 public enum OrderEvent {
     VALIDATE_ORDER,
@@ -8,5 +8,8 @@ public enum OrderEvent {
     ALLOCATION_SUCCESS,
     ALLOCATION_NO_INVENTORY,
     ALLOCATION_FAILED,
-    ORDER_PICKED_UP;
+    ORDER_PICKED_UP,
+    CANCEL_ORDER,
+    CANCEL_SUCCESS,
+    CANCEL_ERROR;
 }

@@ -14,7 +14,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.entities;
+package griezma.mssc.beerorder.data;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

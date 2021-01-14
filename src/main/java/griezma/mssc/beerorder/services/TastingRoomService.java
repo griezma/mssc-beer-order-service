@@ -1,8 +1,8 @@
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.entities.Customer;
-import griezma.mssc.beerorder.repositories.BeerOrderRepository;
-import griezma.mssc.beerorder.repositories.CustomerRepository;
+import griezma.mssc.beerorder.data.Customer;
+import griezma.mssc.beerorder.data.BeerOrderRepository;
+import griezma.mssc.beerorder.data.CustomerRepository;
 import griezma.mssc.beerorder.bootstrap.BeerOrderBootstrap;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import griezma.mssc.brewery.model.BeerOrderLineDto;

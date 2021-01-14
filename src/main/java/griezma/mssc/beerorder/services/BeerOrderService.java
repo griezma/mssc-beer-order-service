@@ -17,10 +17,10 @@
 
 package griezma.mssc.beerorder.services;
 
-import griezma.mssc.beerorder.entities.BeerOrder;
-import griezma.mssc.beerorder.entities.Customer;
-import griezma.mssc.beerorder.repositories.BeerOrderRepository;
-import griezma.mssc.beerorder.repositories.CustomerRepository;
+import griezma.mssc.beerorder.data.BeerOrder;
+import griezma.mssc.beerorder.data.Customer;
+import griezma.mssc.beerorder.data.BeerOrderRepository;
+import griezma.mssc.beerorder.data.CustomerRepository;
 import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +82,7 @@ public class BeerOrderService {
                 .findById(customerId)
                 .orElseThrow(() -> new NoSuchElementException("Customer not found: " + customerId));
 
-        orderFlow.beerOrderPickedUp(order);
+        orderFlow.pickupOrder(order);
     }
 
     public BeerOrderDto getOrderById(UUID customerId, UUID orderId) {

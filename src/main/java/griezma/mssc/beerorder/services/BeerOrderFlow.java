@@ -1,15 +1,16 @@
 package griezma.mssc.beerorder.services;
 
 import griezma.mssc.beerorder.config.JmsConfig;
-import griezma.mssc.beerorder.entities.BeerOrder;
-import griezma.mssc.beerorder.entities.BeerOrderLine;
-import griezma.mssc.beerorder.repositories.BeerOrderRepository;
+import griezma.mssc.beerorder.data.BeerOrder;
+import griezma.mssc.beerorder.data.BeerOrderLine;
+import griezma.mssc.beerorder.data.BeerOrderRepository;
+import griezma.mssc.beerorder.events.OrderEvent;
 import griezma.mssc.beerorder.sm.StatePersistInterceptor;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import griezma.mssc.brewery.model.BeerOrderLineDto;
 import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.brewery.model.events.AllocateOrderResponse;
-import griezma.mssc.brewery.model.events.OrderEvent;
+import griezma.mssc.brewery.model.events.DeallocateOrderResponse;
 import griezma.mssc.brewery.model.events.ValidateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,6 @@ public class BeerOrderFlow {
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE)
     public void handleAllocateOrderResponse(AllocateOrderResponse response) {
         BeerOrder order = repo.findById(response.getOrder().getId()).orElseThrow();
-
         if (response.isOrderFilled()) {
             orderAllocationPassed(order, response.getOrder());
         } else if (response.isAllocationError()) {
@@ -70,7 +70,7 @@ public class BeerOrderFlow {
 
     public void orderAllocationPassed(BeerOrder order, BeerOrderDto orderDto) {
         sendOrderEvent(order, OrderEvent.ALLOCATION_SUCCESS);
-        updateAllocation(orderDto);
+        updateAllocation(orderDto, true);
     }
 
     public void orderAllocationError(BeerOrder order, BeerOrderDto orderDto) {
@@ -79,14 +79,28 @@ public class BeerOrderFlow {
 
     public void orderAllocationPartiallyFilled(BeerOrder order, BeerOrderDto orderDto) {
         sendOrderEvent(order, OrderEvent.ALLOCATION_NO_INVENTORY);
-        updateAllocation(orderDto);
+        updateAllocation(orderDto, false);
     }
 
-    public void beerOrderPickedUp(BeerOrder order) {
+    public void pickupOrder(BeerOrder order) {
         sendOrderEvent(order, OrderEvent.ORDER_PICKED_UP);
     }
 
-    private void updateAllocation(BeerOrderDto orderDto) {
+    public void cancelOrder(BeerOrder order) {
+        sendOrderEvent(order, OrderEvent.CANCEL_ORDER);
+    }
+
+    @JmsListener(destination = JmsConfig.DEALLOCATE_ORDER_REQPONSE_QUEUE)
+    void handleDeallocateOrderRepsonse(DeallocateOrderResponse response) {
+        BeerOrder order = repo.findById(response.getOrderId()).orElseThrow();
+        if (response.isComplete()) {
+            sendOrderEvent(order, OrderEvent.CANCEL_SUCCESS);
+        } else {
+            sendOrderEvent(order, OrderEvent.CANCEL_ERROR);
+        }
+    }
+
+    private void updateAllocation(BeerOrderDto orderDto, boolean filled) {
         BeerOrder order = repo.findById(orderDto.getId()).orElseThrow();
         for (BeerOrderLine orderLine : order.getOrderLines()) {
             orderDto.getOrderLines().stream()
@@ -99,7 +113,6 @@ public class BeerOrderFlow {
     }
 
     private void sendOrderEvent(BeerOrder order, OrderEvent event) {
-        log.debug("sendOrderEvent: customers={}");
         var messsageBuilder = MessageBuilder
                 .withPayload(event)
                 .setHeader(BEERORDER_ID_HEADER, order.getId().toString());

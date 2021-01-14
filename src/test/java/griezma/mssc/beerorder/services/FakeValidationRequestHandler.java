@@ -19,9 +19,10 @@ public class FakeValidationRequestHandler {
     void validateOrderFake(ValidateOrderRequest validateOrderRequest) {
         log.debug("validateOrderFake: " + validateOrderRequest);
         BeerOrderDto order =  validateOrderRequest.getOrder();
+        boolean valid = !"test-validation-error".equals(order.getCustomerRef());
         jms.convertAndSend(JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE, ValidateOrderResponse.builder()
                 .order(validateOrderRequest.getOrder())
-                .valid(true)
+                .valid(valid)
                 .build()
         );
     }

@@ -14,17 +14,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.repositories;
 
-import griezma.mssc.beerorder.entities.Customer;
-import org.springframework.data.jpa.repository.JpaRepository;
+package griezma.mssc.beerorder.data;
 
-import java.util.List;
+import griezma.mssc.beerorder.data.BeerOrderLine;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-01-26.
- */
-public interface CustomerRepository extends JpaRepository<Customer, UUID> {
-    List<Customer> findAllByCustomerNameLike(String customerName);
+public interface BeerOrderLineRepository extends PagingAndSortingRepository<BeerOrderLine, UUID> {
 }

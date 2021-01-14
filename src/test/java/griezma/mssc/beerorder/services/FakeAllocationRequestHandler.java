@@ -19,7 +19,16 @@ public class FakeAllocationRequestHandler {
     void allocationRequest(AllocateOrderRequest request) {
         log.debug("order allocation request: " + request);
         var order = request.getOrder();
-        order.getOrderLines().forEach(line -> line.setAllocatedQuantity(line.getOrderQuantity()));
-        jms.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE, new AllocateOrderResponse(order, true, false));
+        boolean allocationError = "test-allocation-error".equals(order.getCustomerRef());
+        boolean orderFilled = !(allocationError || "test-allocation-partial".equals(order.getCustomerRef()));
+
+        if (!allocationError) {
+            if (orderFilled) {
+                order.getOrderLines().forEach(line -> line.setAllocatedQuantity(line.getOrderQuantity()));
+            } else {
+                order.getOrderLines().forEach(line -> line.setAllocatedQuantity(line.getOrderQuantity() - 1));
+            }
+        }
+        jms.convertAndSend(JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE, new AllocateOrderResponse(order, orderFilled, allocationError));
     }
 }

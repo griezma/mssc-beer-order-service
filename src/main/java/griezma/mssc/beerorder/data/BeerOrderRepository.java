@@ -14,11 +14,11 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package griezma.mssc.beerorder.repositories;
+package griezma.mssc.beerorder.data;
 
 
-import griezma.mssc.beerorder.entities.BeerOrder;
-import griezma.mssc.beerorder.entities.Customer;
+import griezma.mssc.beerorder.data.BeerOrder;
+import griezma.mssc.beerorder.data.Customer;
 import griezma.mssc.brewery.model.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

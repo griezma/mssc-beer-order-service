@@ -1,10 +1,14 @@
 version: 2.1
+
 orbs:
-    maven: circleci/maven@1.0.3
+  maven: circleci/maven@1.0.3
+
 workflows:
-    maven_test:
-        jobs:
-            - maven/test:
-                  command: '-X verify'
+  maven_test:
+    jobs:
+      - maven/test:
+          context: Github
+          settings_file: '.circleci/settings.xml'
+
 executors:
-    tag: '11.0'
+  tag: '11.0'

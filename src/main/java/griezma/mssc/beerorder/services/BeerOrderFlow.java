@@ -15,7 +15,6 @@ import griezma.mssc.brewery.model.events.ValidateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
@@ -27,11 +26,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BeerOrderFlow {
-    public static final String BEERORDER_ID_HEADER = "beerorder-id";
-
     private final StateMachineFactory<OrderStatus, OrderEvent> smFactory;
     private final BeerOrderRepository repo;
-    private final StatePersistInterceptor statePersisting;
+    private final StatePersistInterceptor statePersistInterceptor;
 
     public BeerOrder newBeerOrder(BeerOrder order) {
         log.debug("newBeerOrder: " + order);
@@ -113,17 +110,19 @@ public class BeerOrderFlow {
     }
 
     private void sendOrderEvent(BeerOrder order, OrderEvent event) {
-        var messsageBuilder = MessageBuilder
-                .withPayload(event)
-                .setHeader(BEERORDER_ID_HEADER, order.getId().toString());
-        stateMachine(order).sendEvent(messsageBuilder.build());
+//        var messsageBuilder = MessageBuilder
+//                .withPayload(event)
+//                .setHeader(BEERORDER_ID_HEADER, order.getId().toString());
+//        stateMachine(order).sendEvent(messsageBuilder.build());
+        stateMachine(order).sendEvent(event);
     }
 
     private StateMachine<OrderStatus, OrderEvent> stateMachine(BeerOrder order) {
+        // sm uuid is order id
         var sm = smFactory.getStateMachine(order.getId());
         sm.stop();
         sm.getStateMachineAccessor().doWithAllRegions(sma -> {
-            sma.addStateMachineInterceptor(statePersisting);
+            sma.addStateMachineInterceptor(statePersistInterceptor);
             sma.resetStateMachine(new DefaultStateMachineContext<>(order.getOrderStatus(), null, null, null));
         });
         sm.start();

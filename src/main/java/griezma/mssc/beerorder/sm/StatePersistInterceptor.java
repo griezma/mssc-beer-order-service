@@ -2,7 +2,6 @@ package griezma.mssc.beerorder.sm;
 
 import griezma.mssc.beerorder.data.BeerOrder;
 import griezma.mssc.beerorder.data.BeerOrderRepository;
-import griezma.mssc.beerorder.services.BeerOrderFlow;
 import griezma.mssc.beerorder.events.OrderEvent;
 import griezma.mssc.brewery.model.OrderStatus;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +24,8 @@ public class StatePersistInterceptor extends StateMachineInterceptorAdapter<Orde
 
     @Override @Transactional
     public void preStateChange(State<OrderStatus, OrderEvent> state, Message<OrderEvent> message, Transition<OrderStatus, OrderEvent> transition, StateMachine<OrderStatus, OrderEvent> stateMachine) {
-        if (message == null) return;
-        String sOrderId = message.getHeaders().get(BeerOrderFlow.BEERORDER_ID_HEADER, String.class);
-        log.debug("preStateChange: {}, order={}", state.getId(), sOrderId);
-        UUID orderId = UUID.fromString(sOrderId);
-        BeerOrder order = repo.getOne(orderId);
+        UUID orderId = stateMachine.getUuid();
+        BeerOrder order = repo.findById(orderId).orElseThrow();
         order.setOrderStatus(state.getId());
     }
 }

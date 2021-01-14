@@ -145,6 +145,7 @@ public class BeerOrderFlowIT {
                 });
 
         OrderAllocationFailure allocationError = (OrderAllocationFailure) jms.receiveAndConvert(JmsConfig.ALLOCATION_ERROR_QUEUE);
+        assert allocationError != null;
         assertEquals(order.getId(), allocationError.getOrderId());
     }
 
@@ -174,13 +175,14 @@ public class BeerOrderFlowIT {
 
     @Test
     void cancelValidatedOrder() {
+        log.debug("cancelValidateOrder called");
         BeerOrder validated = createValidatedBeerOrder();
         var orderId = validated.getId();
         orderFlow.cancelOrder(validated);
         await().atMost(Duration.ofMillis(500))
                 .untilAsserted(() -> {
                     BeerOrder cancelled = orderRepo.findById(orderId).orElseThrow();
-                    assertEquals(OrderStatus.CANCELLED, cancelled.getOrderStatus());
+                    assertEquals(OrderStatus.CANCEL_PENDING, cancelled.getOrderStatus());
                 });
     }
 
@@ -193,18 +195,14 @@ public class BeerOrderFlowIT {
 
     BeerOrder createAllocatedBeerOrder() {
         BeerOrder order = createBeerOrder();
-        order.getOrderLines().forEach(line -> {
-            line.setAllocatedQuantity(line.getOrderQuantity());
-        });
+        order.getOrderLines().forEach(line -> line.setAllocatedQuantity(line.getOrderQuantity()));
         order.setOrderStatus(OrderStatus.ALLOCATED);
         return orderRepo.save(order);
     }
 
     BeerOrder createValidatedBeerOrder() {
         BeerOrder order = createBeerOrder();
-        order.getOrderLines().forEach(line -> {
-            line.setAllocatedQuantity(line.getOrderQuantity());
-        });
+        order.getOrderLines().forEach(line -> line.setAllocatedQuantity(line.getOrderQuantity()));
         order.setOrderStatus(OrderStatus.VALIDATED);
         return orderRepo.save(order);
     }

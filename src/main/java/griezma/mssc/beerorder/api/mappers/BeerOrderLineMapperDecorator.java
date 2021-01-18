@@ -1,4 +1,4 @@
-package griezma.mssc.beerorder.web.mappers;
+package griezma.mssc.beerorder.api.mappers;
 
 
 import griezma.mssc.beerorder.data.BeerOrderLine;

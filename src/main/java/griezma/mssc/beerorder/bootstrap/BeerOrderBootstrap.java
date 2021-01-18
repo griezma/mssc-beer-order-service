@@ -28,11 +28,11 @@ public class BeerOrderBootstrap implements CommandLineRunner {
     private void loadCustomerData() {
         if (customerRepository.count() == 0) {
             Customer customer = Customer.builder()
-                    .customerName(TASTING_ROOM)
+                    .name(TASTING_ROOM)
                     .apiKey(UUID.randomUUID())
                     .build();
             customerRepository.save(customer);
-            log.info("Tasting Room Customer: {}", customer.getId());
+            log.debug("Tasting Room Customer: {}", customer.getId());
         }
     }
 }

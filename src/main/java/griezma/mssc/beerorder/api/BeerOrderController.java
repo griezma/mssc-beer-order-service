@@ -15,31 +15,46 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.web.controllers;
+package griezma.mssc.beerorder.api;
 
+import griezma.mssc.beerorder.api.mappers.CustomerMapper;
+import griezma.mssc.beerorder.data.CustomerRepository;
 import griezma.mssc.beerorder.services.BeerOrderService;
 import griezma.mssc.brewery.model.BeerOrderDto;
+import griezma.mssc.brewery.model.CustomerDto;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-@RequestMapping("/api/v1/customers/{customerId}/")
+@Slf4j
+@RequestMapping("/api/v1/customers")
 @RestController
+@RequiredArgsConstructor
 public class BeerOrderController {
 
     private static final Integer DEFAULT_PAGE_NUMBER = 0;
     private static final Integer DEFAULT_PAGE_SIZE = 25;
 
     private final BeerOrderService beerOrderService;
+    private final CustomerRepository customerRepo;
+    private final CustomerMapper customerMapper;
 
-    public BeerOrderController(BeerOrderService beerOrderService) {
-        this.beerOrderService = beerOrderService;
+    @GetMapping
+    public List<CustomerDto> listCustomers() {
+        log.debug("listCustomers");
+        return customerRepo.findAll().stream()
+                .map(customerMapper::customerToDto)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("orders")
+    @GetMapping("/{customerId}/orders")
     public Page<BeerOrderDto> listOrders(@PathVariable("customerId") UUID customerId,
                                          @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize){
@@ -55,18 +70,18 @@ public class BeerOrderController {
         return beerOrderService.listOrders(customerId, PageRequest.of(pageNumber, pageSize));
     }
 
-    @PostMapping("orders")
+    @PostMapping("/{customerId}/orders")
     @ResponseStatus(HttpStatus.CREATED)
     public BeerOrderDto placeOrder(@PathVariable("customerId") UUID customerId, @RequestBody BeerOrderDto beerOrderDto){
         return beerOrderService.placeOrder(customerId, beerOrderDto);
     }
 
-    @GetMapping("orders/{orderId}")
+    @GetMapping("/{customerId}/orders/{orderId}")
     public BeerOrderDto getOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId){
         return beerOrderService.getOrderById(customerId, orderId);
     }
 
-    @PutMapping("/orders/{orderId}/pickup")
+    @PutMapping("/{customerId}/orders/{orderId}/pickup")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void pickupOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId){
         beerOrderService.pickupOrder(customerId, orderId);

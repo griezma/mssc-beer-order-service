@@ -4,8 +4,8 @@ import griezma.mssc.beerorder.config.JmsConfig;
 import griezma.mssc.beerorder.data.BeerOrder;
 import griezma.mssc.beerorder.data.BeerOrderLine;
 import griezma.mssc.beerorder.data.BeerOrderRepository;
-import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.beerorder.sm.StatePersistInterceptor;
+import griezma.mssc.beerorder.sm.events.OrderEvent;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import griezma.mssc.brewery.model.BeerOrderLineDto;
 import griezma.mssc.brewery.model.OrderStatus;
@@ -15,11 +15,15 @@ import griezma.mssc.brewery.model.events.ValidateOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.statemachine.support.DefaultStateMachineContext;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Slf4j
@@ -29,32 +33,48 @@ public class BeerOrderFlow {
     private final StateMachineFactory<OrderStatus, OrderEvent> smFactory;
     private final BeerOrderRepository repo;
     private final StatePersistInterceptor statePersistInterceptor;
+    private final TaskScheduler scheduler;
 
+//    @Transactional
     public BeerOrder newBeerOrder(BeerOrder order) {
-        log.debug("newBeerOrder: " + order);
         order.setId(null);
         order.setOrderStatus(OrderStatus.NEW);
-        BeerOrder savedOrder = repo.saveAndFlush(order);
+        BeerOrder savedOrder = repo.save(order);
+        log.debug("New beer order stored: " + savedOrder.getId());
         sendOrderEvent(savedOrder, OrderEvent.VALIDATE_ORDER);
         return savedOrder;
     }
 
-    @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE)
-    public void handleValidateOrderResponse(ValidateOrderResponse response) {
-        UUID orderId = response.getOrder().getId();
-        BeerOrder order = repo.findById(orderId).orElseThrow();
-        if (response.isValid()) {
-            sendOrderEvent(order, OrderEvent.VALIDATION_PASSED);
 
-            order = repo.findById(orderId).orElseThrow();
-            sendOrderEvent(order, OrderEvent.ALLOCATE_ORDER);
+    @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE)
+    void handleValidateOrderResponse(ValidateOrderResponse response) {
+        UUID orderId = response.getOrder().getId();
+        if (response.isValid()) {
+            validationPassed(orderId);
         } else {
-            sendOrderEvent(order, OrderEvent.VALIDATION_FAILED);
+            validationFailed(orderId);
         }
+        log.debug("Order validation complete: {}", orderId);
+    }
+
+    @Transactional
+    public void validationPassed(UUID orderId) {
+        log.debug("validationPassed: {}", orderId);
+        BeerOrder order = repo.findById(orderId).orElseThrow(() -> new NoSuchElementException("Beer order not found by id: " + orderId));
+        sendOrderEvent(order, OrderEvent.VALIDATION_PASSED);
+        order = repo.findById(orderId).orElseThrow();
+        sendOrderEvent(order, OrderEvent.ALLOCATE_ORDER);
+    }
+
+    @Transactional
+    public void validationFailed(UUID orderId) {
+        log.debug("validationFailed: {}", orderId);
+        BeerOrder order = repo.findById(orderId).orElseThrow(() -> new NoSuchElementException("Beer order not found by id: " + orderId));
+        sendOrderEvent(order, OrderEvent.VALIDATION_FAILED);
     }
 
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE)
-    public void handleAllocateOrderResponse(AllocateOrderResponse response) {
+    void handleAllocateOrderResponse(AllocateOrderResponse response) {
         BeerOrder order = repo.findById(response.getOrder().getId()).orElseThrow();
         if (response.isOrderFilled()) {
             orderAllocationPassed(order, response.getOrder());
@@ -110,11 +130,7 @@ public class BeerOrderFlow {
     }
 
     private void sendOrderEvent(BeerOrder order, OrderEvent event) {
-//        var messsageBuilder = MessageBuilder
-//                .withPayload(event)
-//                .setHeader(BEERORDER_ID_HEADER, order.getId().toString());
-//        stateMachine(order).sendEvent(messsageBuilder.build());
-        stateMachine(order).sendEvent(event);
+        scheduler.schedule(() -> stateMachine(order).sendEvent(event), Instant.now().plusMillis(100));
     }
 
     private StateMachine<OrderStatus, OrderEvent> stateMachine(BeerOrder order) {

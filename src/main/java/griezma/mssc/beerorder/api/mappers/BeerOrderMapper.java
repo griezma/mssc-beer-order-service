@@ -15,12 +15,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package griezma.mssc.beerorder.data;
+package griezma.mssc.beerorder.api.mappers;
 
-import griezma.mssc.beerorder.data.BeerOrderLine;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import griezma.mssc.beerorder.data.BeerOrder;
+import griezma.mssc.brewery.model.BeerOrderDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import java.util.UUID;
+@Mapper(uses = { DateMapper.class, BeerOrderLineMapper.class })
+public interface BeerOrderMapper {
+    @Mapping(source = "customer.id", target = "customerId")
+    BeerOrderDto beerOrderToDto(BeerOrder beerOrder);
 
-public interface BeerOrderLineRepository extends PagingAndSortingRepository<BeerOrderLine, UUID> {
+    BeerOrder dtoToBeerOrder(BeerOrderDto dto);
 }

@@ -1,5 +1,6 @@
 package griezma.mssc.beerorder.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ public class JmsConfig {
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_JsonType");
         converter.setObjectMapper(om);
+        om.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return converter;
     }
 }

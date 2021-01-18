@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import griezma.mssc.beerorder.config.JmsConfig;
 import griezma.mssc.beerorder.data.*;
 import griezma.mssc.beerorder.sm.actions.ValidationDeniedAction;
-import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
+import griezma.mssc.beerorder.api.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.BeerDto;
 import griezma.mssc.brewery.model.OrderStatus;
 import griezma.mssc.brewery.model.events.DeallocateOrderRequest;
@@ -212,7 +212,7 @@ public class BeerOrderFlowIT {
     @BeforeEach
     void setup() {
         testCustomer = customerRepo.save(Customer.builder()
-                .customerName("test customer")
+                .name("test customer")
                 .build());
     }
 

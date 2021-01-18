@@ -21,7 +21,7 @@ import griezma.mssc.beerorder.data.BeerOrder;
 import griezma.mssc.beerorder.data.Customer;
 import griezma.mssc.beerorder.data.BeerOrderRepository;
 import griezma.mssc.beerorder.data.CustomerRepository;
-import griezma.mssc.beerorder.web.mappers.BeerOrderMapper;
+import griezma.mssc.beerorder.api.mappers.BeerOrderMapper;
 import griezma.mssc.brewery.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

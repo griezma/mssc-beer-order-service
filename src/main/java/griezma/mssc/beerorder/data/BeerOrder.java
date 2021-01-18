@@ -32,12 +32,9 @@ import java.util.UUID;
 @NoArgsConstructor @AllArgsConstructor
 @ToString
 public class BeerOrder {
-    @Id @GeneratedValue
-//    @GeneratedValue(generator = "UUID")
-//    @GenericGenerator(
-//            name = "UUID",
-//            strategy = "org.hibernate.id.UUIDGenerator"
-//    )
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "char(36)", updatable = false)
     private UUID id;
 
     @Version

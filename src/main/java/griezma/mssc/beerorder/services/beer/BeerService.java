@@ -14,7 +14,7 @@ public class BeerService {
     private static final String BEER_ID_PATH = "/api/v1/beer/";
     private static final String BEER_UPC_PATH = "/api/v1/beerupc/";
 
-    @Value("${mssc.beer_service_host}")
+    @Value("${beerworks.beer_service_host}")
     private String beerServiceHost;
 
     private final RestTemplate rest;

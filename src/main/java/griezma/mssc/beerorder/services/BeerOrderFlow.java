@@ -35,7 +35,7 @@ public class BeerOrderFlow {
     private final StatePersistInterceptor statePersistInterceptor;
     private final TaskScheduler scheduler;
 
-//    @Transactional
+    @Transactional
     public BeerOrder newBeerOrder(BeerOrder order) {
         order.setId(null);
         order.setOrderStatus(OrderStatus.NEW);
